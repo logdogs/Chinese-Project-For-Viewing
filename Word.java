@@ -1,8 +1,4 @@
 import java.util.ArrayList;
-enum CharacterSet {
-    SIMPLIFIED,
-    TRADITIONAL;
-}
 public class Word {
 
     // Every word (at least in our abstraction, this is not meant to fit the linguistic model) has:
@@ -22,35 +18,30 @@ public class Word {
 
     // Make this more sophisticated later to take a transcription instead of either pinyin or zhuyin and a character, then convert
     // converting pinyin --> zhuyin or zhuyin --> pinyin is simple, converting the character tricky
-    public Word(CharacterSet type, String transcription, String characters) {
-        // Base
+    public Word(String transcription, String simplified, String traditional, boolean zhuyin, String english) {
         this.english = new ArrayList<String>();
         this.converter = new Conversions();
-        if (type == CharacterSet.SIMPLIFIED) {
-            initializeTraditional(transcription, characters);
-        } else {
-            initializeSimplified(transcription, characters);
-        }
-    }
 
-    // Initialization for traditional character input
-    private void initializeTraditional(String zhuyin, String traditional) {
-        // Easy part
-        this.zhuyin = zhuyin;
-        this.traditional = traditional;
-        // Conversion part
-        this.pinyin = converter.convertZhuyin(zhuyin);
-        
-    }
-    // Initialization for simplified character input
-    private void initializeSimplified(String pinyin, String simplified) {
-        // Easy part
-        this.pinyin = this.converter.convertNumericPinyin(pinyin);
+        // Need to parse the English
+        String words[] = english.split("\\|,");
+        for (String word : words) {
+            this.english.add(word);
+        }
+
+        // Check which system was used for the sound transcription and convert as is appropriate
+        if (zhuyin) {
+            this.zhuyin = transcription;
+            this.pinyin = converter.convertZhuyin(transcription);
+        } else {
+            this.pinyin = converter.convertNumericPinyin(transcription);
+            this.zhuyin = converter.convertPinyin(transcription);
+        }
+
+        // Set the characters
         this.simplified = simplified;
-        // Conversion part
-        this.zhuyin = converter.convertPinyin(pinyin);
-        // Convert the characters, whew, this'll be difficult
+        this.traditional = traditional;
     }
+    
     // Accessors and mutators for the different fields
     public ArrayList<String> getEnglish() { return this.english; }
     public String getPinyin() { return this.pinyin; }
@@ -63,4 +54,16 @@ public class Word {
     public void setZhuyin(String zhuyin) { this.zhuyin = zhuyin; }
     public void setSimplified(String simplified) { this.simplified = simplified; }
     public void setTraditional(String traditional) { this.traditional = traditional; }
+
+    // toString method, mainly for debugging
+    public String toString() {
+        String retval = this.traditional + "\t" + this.simplified + "\n" + this.zhuyin + "\t" + this.pinyin + "\n";
+        for (int i = 0; i < this.english.size(); i++) {
+            if (i < this.english.size()-1) {
+                retval += "\\";
+            }
+            retval += this.english.get(i);
+        }
+        return retval;
+    }
 }

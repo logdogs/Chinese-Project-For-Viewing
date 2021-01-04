@@ -1,11 +1,8 @@
-import java.io.FileNotFoundException;
-import java.io.UnsupportedEncodingException;
-import java.io.File;
-import java.io.PrintStream;
-
 public class Driver {
     public static void main(String[] args) {
-        Tests tester = new Tests();
-        tester.testMappings();
+        // Tests tester = new Tests();
+        // tester.testZhuyinModification();
+        GUI gui = new GUI("C:\\Users\\Evan\\go\\src\\gitGolangProjects\\Chinese-Project\\OUTPUT.txt");
+        gui.start();
     }
 }

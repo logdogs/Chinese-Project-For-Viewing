@@ -1162,4 +1162,85 @@ public class Conversions {
         return convertNumericPinyin(numericPinyin);
         // return numericPinyin;
     }
+
+    // Function to take a "string" of pinyin syllables and convert it into an equivalent "string" of zhuyin syllables
+    public String convertPinyinString(String pinyin) {
+        // We can assume that there are two types of ways in which the syllables we want to process are grouped:
+        //  1. stuck together
+        //  2. separated by spaces
+        //  MAYBE eventually by apostrophes
+        // We want to first take it apart and process the string by the space delimited pieces (which we refer to as 'blocks'),
+        //  then we want to handle the 'glued' pieces within each block
+        String result = "";
+        
+        // Maybe try iterating along and then passing substrings when you hit a number instead of splitting? 
+        //  This seems much easier and intuitive, plus it doesn't require extra overhead (data structures and function calls)
+        //  the trick is we must remember the last spot where we saw a digit
+        int lastStart = 0;
+        for (int i = 0; i < pinyin.length(); i++) {
+            if (pinyin.charAt(i) == ' ') {
+                result += " ";
+                lastStart = i+1;
+            }
+            if (Character.isDigit(pinyin.charAt(i))) {
+                result += convertPinyin(pinyin.substring(lastStart,i+1));
+                lastStart = i+1;
+            }
+        }
+        // Check if the last character isn't a digit
+        if (!Character.isDigit(pinyin.charAt(pinyin.length()-1))) {
+            result += convertPinyin(pinyin.substring(lastStart));
+        }
+        return result;
+    }
+
+    // Extension of the convertNumericPinyin function which handles "strings" of multiple syllables
+    public String convertNumericPinyinString(String numeric) {
+        // Exact same as the above function, but instead of converting to zhuyin, we just replace a given character with
+        //  a character featuring the appropriate diacritic mark
+        String result = "";
+        
+        int lastStart = 0;
+        for (int i = 0; i < numeric.length(); i++) {
+            if (numeric.charAt(i) == ' ') {
+                result += " ";
+                lastStart = i+1;
+            }
+            if (Character.isDigit(numeric.charAt(i))) {
+                result += convertNumericPinyin(numeric.substring(lastStart,i+1));
+                lastStart = i+1;
+            }
+        }
+        // Check if the last character isn't a digit
+        if (!Character.isDigit(numeric.charAt(numeric.length()-1))) {
+            result += convertNumericPinyin(numeric.substring(lastStart));
+        }
+        return result;
+    }
+
+    // Function to take a "string" of zhuyin syllables and convert it into an equivalent "string" of pinyin syllables
+    public String convertZhuyinString(String zhuyin) {
+        // Essentially the exact same process as with pinyin, but instead of digits, we deal with tone marks
+        String result = "";
+
+        int lastStart = 0;
+        for (int i = 0; i < zhuyin.length(); i++) {
+            if (zhuyin.charAt(i) == ' ') {
+                result += " ";
+                lastStart += 1;
+            }
+            if (isToneMark(zhuyin.charAt(i))) {
+                result += convertZhuyin(zhuyin.substring(lastStart,i+1));
+                lastStart = i+1;
+            }
+        }
+        // Check if the last character is not a tone mark (i.e. it's the first tone)
+        if (!isToneMark(zhuyin.charAt(zhuyin.length()-1))) {
+            result += convertZhuyin(zhuyin.substring(lastStart));
+        }
+        return result;
+    }
+    public boolean isToneMark(char character) {
+        return character == '\u02D9' || character == '\u02C9' || character == '\u02CA' || character == '\u02C7' || character == '\u02CB';
+    }
 }

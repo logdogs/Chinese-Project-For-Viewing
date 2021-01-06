@@ -5,6 +5,44 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 public class Tests {
 
+    // 
+    public void testHanziCreation() {
+        try {
+            System.setOut(new PrintStream(System.out, true, "UTF-8"));
+            Hanzi h1 = new Hanzi('汉', '漢', "han4", false, "Chinese ehtnicity");
+            Hanzi h2 = new Hanzi('紅', '红', "hong2", false, "Red");
+            Hanzi h3 = new Hanzi('樣', '样', "ㄧㄤˋ", true, "Style/fashion");
+            Hanzi h4 = new Hanzi('过', '過', "ㄍㄨㄛˋ", true, "Chinese ehtnicity");
+            System.out.printf("%s\n\n%s\n\n%s\n\n%s\n", h1,h2,h3,h4);
+        } catch (UnsupportedEncodingException e) { e.printStackTrace(); }
+    }
+
+    // Working
+    public void testConvertZhuyinString() {
+        Conversions conv = new Conversions();
+        String s1 = conv.convertZhuyinString("ㄉㄧㄢˋㄏㄨㄚˋ");
+        String s2 = conv.convertZhuyinString("ㄓˉㄉㄠ˙");
+        String s3 = conv.convertZhuyinString("ㄍㄟˇ ㄉㄚˇ ㄉㄧㄢˋㄏㄨㄚˋ");
+        try {
+            System.setOut(new PrintStream(System.out, true, "UTF-8"));
+        } catch (UnsupportedEncodingException e) { e.printStackTrace(); }
+        System.out.printf("%s\n%s\n%s\n", s1,s2,s3);
+    }
+
+    // Working
+    public void testConvertPinyinString() {
+        Conversions conv = new Conversions();
+        String s1 = conv.convertPinyinString("dian4hua4");  // 電話
+        String s2 = conv.convertPinyinString("zhi1dao");    // 知道
+        String s3 = conv.convertPinyinString("gei3 da3 dian4hua4"); // 給打電話
+        try {
+            System.setOut(new PrintStream(System.out, true, "UTF-8"));
+        } catch (UnsupportedEncodingException e) { e.printStackTrace(); }
+
+        System.out.printf("%s\n%s\n%s\n", s1,s2,s3);
+
+    }
+
     // Working
     public void testZhuyinModification() {
         Conversions con = new Conversions();
@@ -19,7 +57,7 @@ public class Tests {
         } catch (UnsupportedEncodingException e) { e.printStackTrace(); }
     }
 
-    // 
+    // Working
     public void testGUI() {
         GUI gui = new GUI("OUTPUT.txt");
         gui.start();

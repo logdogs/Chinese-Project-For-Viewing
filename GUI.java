@@ -16,6 +16,13 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.StandardOpenOption;
+import javax.swing.JScrollPane;
+import javax.swing.JList;
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.Scanner;
+import java.io.FileNotFoundException;
+import javax.swing.DefaultListModel;
 public class GUI extends JFrame implements KeyListener,MouseListener,ActionListener {
 
     private static final long serialVersionUID = 1L;
@@ -33,33 +40,38 @@ public class GUI extends JFrame implements KeyListener,MouseListener,ActionListe
     private final String ZHUYIN = "Zhuyin:";
     private final String PINYIN = "Pinyin:";
     private final String ENGLISH = "English translation:";
+    private final String IN_SET = "Already in the set:";
 
     private JTextField simpText = new JTextField();
     private JTextField tradText = new JTextField();
     private JTextField transText = new JTextField();
     private JTextField engText = new JTextField();
-    private JButton createAnotherButton = new JButton("Create another");
     private JButton createButton = new JButton("Create");
     private JButton doneButton = new JButton("Done");
     private JRadioButton zhuyinButton = new JRadioButton("Zhuyin");
     private JRadioButton pinyinButton = new JRadioButton("Pinyin");        
+    private JScrollPane alreadyInSet;
+    private JLabel inSetLabel;
+    private JList<String> words;
 
     private Conversions converter;
 
     private String setName;
 
-    // NOTE THAT EVERY TIME YOU CREATE A GUI OBJECT YOU SWITCH System.out TO THE FILE, SO YOU MAY NEED TO SWITCH BACK
+    private DefaultListModel<String> data;
+
     public GUI(String filename) {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(600,600);
-        this.setTitle("学习中文！");
+        this.setTitle("學習中文！");
         this.addKeyListener(this);
 
         this.zhuyinButton.addActionListener(this);
         this.pinyinButton.addActionListener(this);
-        this.createAnotherButton.addActionListener(this);
         this.createButton.addActionListener(this);
-        this.doneButton.addActionListener(this);
+        this.doneButton.addActionListener(e -> {
+            this.dispose();
+        });
 
         this.simpLabel = new JLabel(SIMPLIFIED);
         this.tradLabel = new JLabel(TRADITIONAL);
@@ -67,10 +79,55 @@ public class GUI extends JFrame implements KeyListener,MouseListener,ActionListe
         this.zhuyinLabel = new JLabel(ZHUYIN);
         this.pinyinLabel = new JLabel(PINYIN);
         this.engLabel = new JLabel(ENGLISH);
+        this.inSetLabel = new JLabel(IN_SET);
 
         this.converter = new Conversions();
 
         this.setName = filename;
+
+        data= new DefaultListModel<String>();
+        try {
+            Scanner scanner = new Scanner(new FileInputStream(new File(filename)), "UTF-8");
+
+            String characters, transcriptions, english;
+            String word;
+            while (scanner.hasNextLine()) {
+                // To handle when we make it to the end of the file, while is just a blank line (i.e. the line is simply a newline)
+                String test = scanner.nextLine();
+                if (test.equals("\n")) {
+                    break;
+                }
+                characters = test;
+                transcriptions = scanner.nextLine();
+                english = scanner.nextLine();
+                word = characters + "---" + transcriptions + "---" + english;
+                data.addElement(word);
+
+                // Always follows the format (traditional)(\t)(simplified), where the () are just for visual aid
+                // characters = test.split("\\t");
+
+                // // Always follows the format (zhuyin)(\t)(pinyin)
+                // transcriptions = scanner.nextLine().split("\\t");
+                
+                // // Always formated as each of the meanings separated by \
+                // english = scanner.nextLine().split("\\\\");
+                // ArrayList<String> eng = new ArrayList<String>(english.length);
+                // for (int i = 0; i < english.length; i++) {
+                //     eng.add(english[i]);
+                // }
+                // // This'll be useful for studying, but not here
+                // Word word = new Word(characters[0],characters[1],transcriptions[0],transcriptions[1],eng);
+                
+            }
+
+            scanner.close();
+        } catch (FileNotFoundException e) { e.printStackTrace(); }
+        // String ridiculous[] = new String[data.size()]; // conversion so we can pass this to JList's constructor... which is ridiculous
+        // for (int i = 0; i < data.size(); i++) {
+        //     ridiculous[i] = data.get(i);
+        // }
+        this.words = new JList<String>(data);
+        this.alreadyInSet = new JScrollPane(this.words);
 
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -84,6 +141,7 @@ public class GUI extends JFrame implements KeyListener,MouseListener,ActionListe
                 .addComponent(simpLabel)
                 .addComponent(transLabel)
                 .addComponent(engLabel)
+                .addComponent(inSetLabel)
             )
             .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                 .addComponent(tradText)
@@ -101,10 +159,11 @@ public class GUI extends JFrame implements KeyListener,MouseListener,ActionListe
             )
         )
             .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addComponent(createAnotherButton)
                 .addComponent(createButton)
                 .addComponent(doneButton)
             )
+            
+            .addComponent(alreadyInSet)
         );
 
         layout.linkSize(SwingConstants.VERTICAL, tradLabel, tradText);
@@ -142,7 +201,9 @@ public class GUI extends JFrame implements KeyListener,MouseListener,ActionListe
                 .addComponent(engText)
             )
             
-                .addComponent(createAnotherButton)
+            .addComponent(inSetLabel)
+            .addComponent(alreadyInSet)
+            
                 .addComponent(createButton)
                 .addComponent(doneButton)
         );
@@ -163,8 +224,8 @@ public class GUI extends JFrame implements KeyListener,MouseListener,ActionListe
             }
         }
 
-        // Handle the create another, create, and Done buttons, respectively
-        if (e.getSource() == createAnotherButton) {
+        // Handle the Create, create, and Done buttons, respectively
+        if (e.getSource() == createButton) {
             // Get the base information, some conversions will be necessary
             String transcription = this.transText.getText();
 
@@ -173,10 +234,10 @@ public class GUI extends JFrame implements KeyListener,MouseListener,ActionListe
             String pinyin, zhuyin;
             if (zhuyinButton.isSelected()) {
                 zhuyin = transcription;
-                pinyin = converter.convertZhuyin(zhuyin);
+                pinyin = converter.convertZhuyinString(zhuyin);
             } else {
                 pinyin = transcription;
-                zhuyin = converter.convertPinyin(pinyin);
+                zhuyin = converter.convertPinyinString(pinyin);
             }
 
             // Print the word to a file, formatted by the toString method for Word (thus, Words are delimited in the set file by "\n")
@@ -187,6 +248,10 @@ public class GUI extends JFrame implements KeyListener,MouseListener,ActionListe
                                     this.engText.getText());
             try {
                 Files.write(Paths.get(setName), (word.toString() + "\n").getBytes(StandardCharsets.UTF_8), StandardOpenOption.APPEND);
+                String addToList = word.getTraditional() + "\\" + word.getSimplified() +
+                                    "---" + word.getZhuyin() + "\\" + word.getPinyin() +
+                                    "---" + word.getEnglishString();
+                data.addElement(addToList);
             } catch (IOException exception) { exception.printStackTrace(); }
 
             // Clear all the fields, except the zhuyin/pinyin buttons (for convenience), so the user can enter a new word
@@ -194,12 +259,8 @@ public class GUI extends JFrame implements KeyListener,MouseListener,ActionListe
             simpText.setText("");
             transText.setText("");
             engText.setText("");
-        }
-        if (e.getSource() == createButton) {
-            
-        }
-        if (e.getSource() == doneButton) {
-            
+
+            // rerender the graphics
         }
     }
 

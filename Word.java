@@ -23,7 +23,7 @@ public class Word {
         this.converter = new Conversions();
 
         // Need to parse the English
-        String words[] = english.split("\\|,");
+        String words[] = english.split("\\|/");
         for (String word : words) {
             this.english.add(word);
         }
@@ -31,15 +31,23 @@ public class Word {
         // Check which system was used for the sound transcription and convert as is appropriate
         if (zhuyin) {
             this.zhuyin = transcription;
-            this.pinyin = converter.convertZhuyin(transcription);
+            this.pinyin = converter.convertZhuyinString(transcription);
         } else {
-            this.pinyin = converter.convertNumericPinyin(transcription);
-            this.zhuyin = converter.convertPinyin(transcription);
+            this.pinyin = converter.convertNumericPinyinString(transcription);
+            this.zhuyin = converter.convertPinyinString(transcription);
         }
 
         // Set the characters
         this.simplified = simplified;
         this.traditional = traditional;
+    }
+    // Constructor for reading from files (avoids unnecessary computation from translating pinyin --> zhuyin or vice versa)
+    public Word(String traditional, String simplified, String zhuyin, String pinyin, ArrayList<String> english) {
+        this.traditional = traditional;
+        this.simplified = simplified;
+        this.zhuyin = zhuyin;
+        this.pinyin = pinyin;
+        this.english = english;
     }
     
     // Accessors and mutators for the different fields
@@ -63,6 +71,17 @@ public class Word {
                 retval += "\\";
             }
             retval += this.english.get(i);
+        }
+        return retval;
+    }
+    // toString method for the English meanings, only for use in GUIs
+    public String getEnglishString() {
+        String retval = "";
+        for (int i = 0; i < this.english.size(); i++) {
+            retval += this.english.get(i);
+            if (i < this.english.size()-1) {
+                retval += "\\";
+            }
         }
         return retval;
     }

@@ -25,6 +25,13 @@ public class Hanzi {
             this.meanings.add(meaning);
         }
     }
+    public Hanzi(char simplified, char traditional, String pinyin, String zhuyin, ArrayList<String> english) {
+        this.simplified = simplified;
+        this.traditional = traditional;
+        this.pinyin = pinyin;
+        this.zhuyin = zhuyin;
+        this.meanings = english;
+    }
 
     // Accessors
     public char getTraditional() { return this.traditional; }
@@ -47,5 +54,18 @@ public class Hanzi {
             }
         }
         return result;
+    }
+
+    // methods to match input to the Hanzi, mainly for studying
+    public boolean matchEnglish(String answer) {
+        for (String meaning : this.meanings) {
+            if (meaning.equalsIgnoreCase(answer)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public boolean matchChinese(char answer) {
+        return answer == this.traditional || answer == this.simplified;
     }
 }

@@ -85,4 +85,17 @@ public class Word {
         }
         return retval;
     }
+    
+    // Methods for studying that test whether input given was acceptable
+    public boolean matchEnglish(String answer) {
+        for (String word : this.english) {
+            if (word.equalsIgnoreCase(answer)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public boolean matchChinese(String answer) {
+        return this.traditional.equalsIgnoreCase(answer) || this.traditional.equalsIgnoreCase(answer);
+    }
 }

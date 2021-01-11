@@ -126,8 +126,6 @@ public class Selection extends JFrame implements ActionListener {
             .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                 .addComponent(closeButton)
             )
-            // .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            // )
         );
 
         start();
@@ -135,17 +133,32 @@ public class Selection extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        // Modes for creating new sets
         if (e.getSource() == createVocabSetButton) {
-            GUI gui = new GUI("C:\\Users\\Evan\\go\\src\\gitGolangProjects\\Chinese-Project\\OUTPUT.txt");
-            gui.start();
+            FileCreator fc = new FileCreator(true);
+            fc.start();
         }
-
-        // Remember to pass the appropriate boolean to FileSelector's constructor 
+        if (e.getSource() == createCharacterSetButton) {
+            FileCreator fc = new FileCreator(false);
+            fc.start();
+        }
+        // Modes for adding new "flashcards" to a set that already exists
+        if (e.getSource() == addToVocabSetButton) {
+            FileSelector fs = new FileSelector(true,true);
+            fs.start();
+        }
+        if (e.getSource() == addToCharacterSetButton) {
+            FileSelector fs = new FileSelector(false,true);
+            fs.start();
+        }
+        // Study modes
         if (e.getSource() == studyVocabButton) {
-            
+            FileSelector fs = new FileSelector(true,false);
+            fs.start();
         }
         if (e.getSource() == studyCharactersButton) {
-
+            FileSelector fs = new FileSelector(false,false);
+            fs.start();
         }
     }
 

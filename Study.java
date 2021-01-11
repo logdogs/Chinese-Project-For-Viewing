@@ -85,23 +85,23 @@ public class Study extends JFrame implements ActionListener,KeyListener {
         this.pinyin = new JLabel(PINYIN);
         this.showZhuyin = new JButton("Show zhuyin");
         this.zhuyin = new JLabel(ZHUYIN);
-        if (mode) {
-            this.WORD_LABEL = "English translation:";
+        if (!mode) {
+            this.WORD_LABEL = "Translate: ";
             if (vocabulary) {
                 this.WORD_LABEL += words.get(0).getTraditional() + "\\" + words.get(0).getSimplified();
             } else {
                 this.WORD_LABEL += characters.get(0).getTraditional() + "\\" + characters.get(0).getSimplified();
             }
         } else {
-            this.WORD_LABEL = "Chinese translation:";
+            this.WORD_LABEL = "Translate: ";
             if (vocabulary) {
-                this.WORD_LABEL += words.get(0).getTraditional() + "\\" + words.get(0).getSimplified();
+                this.WORD_LABEL += words.get(0).getEnglishString();
             } else {
-                this.WORD_LABEL += characters.get(0).getTraditional() + "\\" + characters.get(0).getSimplified();
+                this.WORD_LABEL += characters.get(0).getEnglishString();
             }
         }
         this.word = new JLabel(this.WORD_LABEL);
-        if (!mode)
+        if (!mode) // good
             this.translation = new JLabel("English translation: ");
         else
             this.translation = new JLabel("Chinese translation: ");
@@ -198,13 +198,12 @@ public class Study extends JFrame implements ActionListener,KeyListener {
             if (mode) {
                 if (this.vocabulary) {
                     if (this.words.get(0).matchChinese(this.answer.getText())) {
-                            // need to increment the score and update labels
-                            this.correct++;
+                        this.correct++;
                     } else {
                         this.incorrect++;
                     }
                     this.words.remove(0);
-                    word.setText(words.get(0).getTraditional() + "\\" + words.get(0).getSimplified());
+                    this.word.setText(this.words.get(0).getEnglishString());
                 } else {
                     if (this.characters.get(0).matchChinese(this.answer.getText().charAt(0))) {
                         this.correct++;
@@ -222,7 +221,7 @@ public class Study extends JFrame implements ActionListener,KeyListener {
                         this.incorrect++;
                     }
                     this.words.remove(0);
-                    this.word.setText(this.words.get(0).getEnglishString());
+                    this.word.setText(words.get(0).getTraditional() + "\\" + words.get(0).getSimplified());
                 } else {
                     if (this.characters.get(0).matchEnglish(this.answer.getText())) {
                         this.correct++;
@@ -301,8 +300,6 @@ public class Study extends JFrame implements ActionListener,KeyListener {
             scanner.close();
         } catch (FileNotFoundException e) { e.printStackTrace(); }
     }
-
-    // Function for "studying" the current given 
 
     public void start() {
         this.setVisible(true);

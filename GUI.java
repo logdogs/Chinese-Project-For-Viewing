@@ -64,7 +64,7 @@ public class GUI extends JFrame implements KeyListener,MouseListener,ActionListe
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(600,600);
         this.setTitle("學習中文！");
-        this.addKeyListener(this);
+        // this.addKeyListener(this);
 
         this.zhuyinButton.addActionListener(this);
         this.pinyinButton.addActionListener(this);
@@ -72,6 +72,10 @@ public class GUI extends JFrame implements KeyListener,MouseListener,ActionListe
         this.doneButton.addActionListener(e -> {
             this.dispose();
         });
+        simpText.addKeyListener(this);
+        tradText.addKeyListener(this);
+        transText.addKeyListener(this);
+        engText.addKeyListener(this);
 
         this.simpLabel = new JLabel(SIMPLIFIED);
         this.tradLabel = new JLabel(TRADITIONAL);
@@ -85,7 +89,7 @@ public class GUI extends JFrame implements KeyListener,MouseListener,ActionListe
 
         this.setName = filename;
 
-        data= new DefaultListModel<String>();
+        data = new DefaultListModel<String>();
         try {
             Scanner scanner = new Scanner(new FileInputStream(new File(filename)), "UTF-8");
 
@@ -102,30 +106,11 @@ public class GUI extends JFrame implements KeyListener,MouseListener,ActionListe
                 english = scanner.nextLine();
                 word = characters + "---" + transcriptions + "---" + english;
                 data.addElement(word);
-
-                // Always follows the format (traditional)(\t)(simplified), where the () are just for visual aid
-                // characters = test.split("\\t");
-
-                // // Always follows the format (zhuyin)(\t)(pinyin)
-                // transcriptions = scanner.nextLine().split("\\t");
-                
-                // // Always formated as each of the meanings separated by \
-                // english = scanner.nextLine().split("\\\\");
-                // ArrayList<String> eng = new ArrayList<String>(english.length);
-                // for (int i = 0; i < english.length; i++) {
-                //     eng.add(english[i]);
-                // }
-                // // This'll be useful for studying, but not here
-                // Word word = new Word(characters[0],characters[1],transcriptions[0],transcriptions[1],eng);
                 
             }
 
             scanner.close();
         } catch (FileNotFoundException e) { e.printStackTrace(); }
-        // String ridiculous[] = new String[data.size()]; // conversion so we can pass this to JList's constructor... which is ridiculous
-        // for (int i = 0; i < data.size(); i++) {
-        //     ridiculous[i] = data.get(i);
-        // }
         this.words = new JList<String>(data);
         this.alreadyInSet = new JScrollPane(this.words);
 
@@ -266,7 +251,9 @@ public class GUI extends JFrame implements KeyListener,MouseListener,ActionListe
 
     @Override
     public void keyPressed(KeyEvent e) {
-        // System.out.printf("Pressed %c.\n", e.getKeyChar());
+        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+            this.createButton.doClick();
+        }
     }
     @Override
     public void keyReleased(KeyEvent e) {
@@ -274,7 +261,9 @@ public class GUI extends JFrame implements KeyListener,MouseListener,ActionListe
     }
     @Override
     public void keyTyped(KeyEvent e) {
-        System.out.printf("%c", e.getKeyChar());
+        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+            this.createButton.doClick();
+        }
     }
 
     @Override

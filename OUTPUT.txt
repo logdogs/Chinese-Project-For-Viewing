@@ -13,3 +13,12 @@ Country
 紅	红
 ㄏㄨㄥˊ	hóng
 Red
+開	开
+ㄎㄞˉ	kāi
+To open/to operate
+黑	黑
+ㄏㄟˉ	hēi
+Black
+黃	黄
+ㄏㄨㄤˊ	huáng
+Yellow

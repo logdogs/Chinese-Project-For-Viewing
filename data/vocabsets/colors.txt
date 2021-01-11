@@ -1,0 +1,12 @@
+黑	黑
+ㄏㄟˉ	hēi
+Black
+紅	红
+ㄏㄨㄥˊ	hóng
+Red
+藍	蓝
+ㄌㄢˊ	lán
+Blue
+綠	绿
+ㄌㄩˋ	lǜ
+Green

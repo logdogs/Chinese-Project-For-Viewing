@@ -55,6 +55,16 @@ public class Hanzi {
         }
         return result;
     }
+    public String getEnglishString() {
+        String result = "";
+        for (int i = 0; i < this.meanings.size(); i++) {
+            result += this.meanings.get(i);
+            if (i < this.meanings.size()) {
+                result += "\\";
+            }
+        }
+        return result;
+    }
 
     // methods to match input to the Hanzi, mainly for studying
     public boolean matchEnglish(String answer) {

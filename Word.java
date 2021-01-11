@@ -96,6 +96,6 @@ public class Word {
         return false;
     }
     public boolean matchChinese(String answer) {
-        return this.traditional.equalsIgnoreCase(answer) || this.traditional.equalsIgnoreCase(answer);
+        return this.traditional.equalsIgnoreCase(answer) || this.simplified.equalsIgnoreCase(answer);
     }
 }

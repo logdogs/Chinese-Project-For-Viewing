@@ -8,9 +8,11 @@ import java.io.File;
 import javax.swing.GroupLayout;
 import javax.swing.SwingConstants;
 import javax.swing.JScrollPane;
+import java.net.URL;
 public class FileSelector extends JFrame implements ActionListener {
     
     // GUI meant to take the "set" (file) that the user would like to study 
+    //  also gets the settings for studying 
 
     private static final long serialVersionUID = 1L;
 
@@ -19,11 +21,16 @@ public class FileSelector extends JFrame implements ActionListener {
     private JList<String> files;
     private JScrollPane scroll;
 
+    public boolean add;
+    public boolean vocab;
+
     // Takes the boolean vocab to determine whether to display only vocab (i.e. vocab == true) or only 漢字
-    public FileSelector(boolean vocab) {
+    public FileSelector(boolean vocab, boolean add) {
         this.setSize(700,200);
         this.setTitle("Select a File");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.add = add;
+        this.vocab = vocab;
 
         this.select = new JButton("Select");
         this.select.addActionListener(this);
@@ -93,7 +100,28 @@ public class FileSelector extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == select) {
             String setName = files.getSelectedValue();
-            System.out.printf("Selected %s\n", setName.toString());
+            // add the fully qualified pathname
+            try {
+                URL main = FileSelector.class.getResource("FileSelector.class");
+                File path = new File(main.getPath());
+                String stringPath = path.toString();
+                stringPath = stringPath.substring(0,stringPath.lastIndexOf("\\")+1);
+                if (vocab) {
+                    stringPath += "data\\vocabsets\\";
+                } else {
+                    stringPath += "data\\charactersets\\";
+                }
+                setName = stringPath + setName + ".txt";
+            } catch (IllegalStateException ex) { ex.printStackTrace(); }
+            if (add) {
+                GUI gui = new GUI(setName);
+                gui.start();
+                this.dispose();
+            } else {
+                StudySettings study = new StudySettings(setName,vocab);
+                study.start();
+                this.dispose();
+            }
         }
     }
 

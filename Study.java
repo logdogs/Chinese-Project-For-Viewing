@@ -35,6 +35,9 @@ public class Study extends JFrame implements ActionListener,KeyListener {
     private JLabel correctLabel;
     private JLabel incorrectLabel;
     private JLabel remainingLabel;
+    private JButton restartButton;
+    private JButton newSetButton;
+    private JButton returnButton;
 
     private String WORD_LABEL;
     private String PINYIN;
@@ -50,6 +53,8 @@ public class Study extends JFrame implements ActionListener,KeyListener {
     // Only one of them will be non-null for any instance of study
     private ArrayList<Word> words;
     private ArrayList<Hanzi> characters;
+    private ArrayList<Word> studiedWords;
+    private ArrayList<Hanzi> studiedCharacters;
 
     // mode == true --> Chinese to English
     // mode == false --> English to Chinese
@@ -58,13 +63,14 @@ public class Study extends JFrame implements ActionListener,KeyListener {
     // vocabulary == false --> filename corresponds to a set of Hanzi
     private boolean vocabulary;
     private boolean showTranscription;
+    private String filename;
 
     public Study(String filename, boolean vocabulary, boolean mode, boolean showTranscription) {
         this.setTitle("Study " + filename);
         this.setSize(600,600);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-
+        this.filename = filename;
         this.mode = mode;
         this.showTranscription = showTranscription;
         this.vocabulary = vocabulary;
@@ -72,32 +78,59 @@ public class Study extends JFrame implements ActionListener,KeyListener {
             words = new ArrayList<Word>();
             characters = null;
             getWordData(filename,words);
+            studiedWords = new ArrayList<Word>(words.size());
             this.remaining = words.size();
         } else {
             characters = new ArrayList<Hanzi>();
             words = null;
             getHanziData(filename,characters);
+            studiedCharacters = new ArrayList<Hanzi>(characters.size());
             this.remaining = characters.size();
         }
         
         // this.word = new JLabel("Translate: " + words.get(0).getTraditional() + "\\" + words.get(0).getSimplified());
         this.showPinyin = new JButton("Show pinyin");
+        this.showPinyin.addActionListener(this);
         this.pinyin = new JLabel(PINYIN);
         this.showZhuyin = new JButton("Show zhuyin");
+        this.showZhuyin.addActionListener(this);
         this.zhuyin = new JLabel(ZHUYIN);
+        restartButton = new JButton("Restart");
+        restartButton.addActionListener(this);
+        newSetButton = new JButton("Study a different set");
+        newSetButton.addActionListener(this);
+        returnButton = new JButton("Return to main menu");
+        returnButton.addActionListener(this);
+
         if (!mode) {
             this.WORD_LABEL = "Translate: ";
             if (vocabulary) {
-                this.WORD_LABEL += words.get(0).getTraditional() + "\\" + words.get(0).getSimplified();
+                if (!words.isEmpty()) {
+                    this.WORD_LABEL += words.get(0).getTraditional() + "\\" + words.get(0).getSimplified();
+                } else {
+                    this.WORD_LABEL = "Finished!";
+                }
             } else {
-                this.WORD_LABEL += characters.get(0).getTraditional() + "\\" + characters.get(0).getSimplified();
+                if (!words.isEmpty()) {
+                    this.WORD_LABEL += characters.get(0).getTraditional() + "\\" + characters.get(0).getSimplified();
+                } else {
+                    this.WORD_LABEL = "Finished!";
+                }
             }
         } else {
             this.WORD_LABEL = "Translate: ";
             if (vocabulary) {
-                this.WORD_LABEL += words.get(0).getEnglishString();
+                if (!words.isEmpty()) {
+                    this.WORD_LABEL += words.get(0).getEnglishString();
+                } else {
+                    this.WORD_LABEL = "Finished";
+                }
             } else {
-                this.WORD_LABEL += characters.get(0).getEnglishString();
+                if (!words.isEmpty()) {
+                    this.WORD_LABEL += characters.get(0).getEnglishString();
+                } else {
+                    this.WORD_LABEL = "Finished";
+                }
             }
         }
         this.word = new JLabel(this.WORD_LABEL);
@@ -108,6 +141,7 @@ public class Study extends JFrame implements ActionListener,KeyListener {
         this.answer = new JTextField();
         this.answer.addKeyListener(this);
         this.enter = new JButton("Enter");
+        this.enter.addActionListener(this);
 
         this.correct = 0;
         this.incorrect = 0;
@@ -115,15 +149,13 @@ public class Study extends JFrame implements ActionListener,KeyListener {
         this.incorrectLabel = new JLabel(INCORRECT_LABEL + Integer.toString(incorrect));
         this.remainingLabel = new JLabel(REMAINING_LABEL + Integer.toString(remaining));
 
-        this.showPinyin.addActionListener(this);
-        this.showZhuyin.addActionListener(this);
-        this.enter.addActionListener(this);
 
         if (showTranscription) {
-            this.pinyin.setText(words.get(0).getPinyin());
-            this.zhuyin.setText(words.get(0).getZhuyin());
+            if (!words.isEmpty()) {
+                this.pinyin.setText(words.get(0).getPinyin());
+                this.zhuyin.setText(words.get(0).getZhuyin());
+            }
         }
-
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setAutoCreateGaps(true);
@@ -147,6 +179,9 @@ public class Study extends JFrame implements ActionListener,KeyListener {
             .addComponent(correctLabel)
             .addComponent(incorrectLabel)
             .addComponent(remainingLabel)
+            .addComponent(restartButton)
+            .addComponent(newSetButton)
+            .addComponent(returnButton)
         );
 
         layout.linkSize(SwingConstants.VERTICAL, showPinyin, pinyin);
@@ -175,6 +210,9 @@ public class Study extends JFrame implements ActionListener,KeyListener {
             .addComponent(correctLabel)
             .addComponent(incorrectLabel)
             .addComponent(remainingLabel)
+            .addComponent(restartButton)
+            .addComponent(newSetButton)
+            .addComponent(returnButton)
         );
 
         start();
@@ -184,17 +222,24 @@ public class Study extends JFrame implements ActionListener,KeyListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == showPinyin) {
             if (!this.showTranscription) {
-                this.pinyin.setText(this.words.get(0).getPinyin());
+                if (!words.isEmpty()) {
+                    this.pinyin.setText(this.words.get(0).getPinyin());
+                }
             }
         }
         if (e.getSource() == showZhuyin) {
             if (!this.showTranscription) {
-                this.zhuyin.setText(this.words.get(0).getZhuyin());
+                if (!words.isEmpty()) {
+                    this.zhuyin.setText(this.words.get(0).getZhuyin());
+                }
             }
         }
         if (e.getSource() == enter) {
             // check the mode (recall, true == Chinese->English, false == English->Chinese)
             //  then check to see whether we're working with Hanzi or Words
+            if (words.isEmpty()) {
+                return;
+            }
             if (mode) {
                 if (this.vocabulary) {
                     if (this.words.get(0).matchChinese(this.answer.getText())) {
@@ -202,16 +247,24 @@ public class Study extends JFrame implements ActionListener,KeyListener {
                     } else {
                         this.incorrect++;
                     }
-                    this.words.remove(0);
-                    this.word.setText(this.words.get(0).getEnglishString());
+                    studiedWords.add(this.words.remove(0));
+                    if (!this.words.isEmpty()) {
+                        this.word.setText(this.words.get(0).getEnglishString());
+                        this.zhuyin.setText(this.words.get(0).getZhuyin());
+                        this.pinyin.setText(this.words.get(0).getPinyin());
+                    }
                 } else {
                     if (this.characters.get(0).matchChinese(this.answer.getText().charAt(0))) {
                         this.correct++;
                     } else {
                         this.incorrect--;
                     }
-                    this.characters.remove(0);
-                    this.word.setText(characters.get(0).getTraditional() + "\\" + characters.get(0).getSimplified());
+                    studiedCharacters.add(this.characters.remove(0));
+                    if (!characters.isEmpty()) {
+                        this.word.setText(characters.get(0).getTraditional() + "\\" + characters.get(0).getSimplified());
+                        this.zhuyin.setText(characters.get(0).getZhuyin());
+                        this.pinyin.setText(characters.get(0).getPinyin());
+                    }
                 }
             } else {
                 if (this.vocabulary) {
@@ -220,16 +273,24 @@ public class Study extends JFrame implements ActionListener,KeyListener {
                     } else {
                         this.incorrect++;
                     }
-                    this.words.remove(0);
-                    this.word.setText(words.get(0).getTraditional() + "\\" + words.get(0).getSimplified());
+                    studiedWords.add(this.words.remove(0));
+                    if (!words.isEmpty()) {
+                        this.word.setText(words.get(0).getTraditional() + "\\" + words.get(0).getSimplified());
+                        zhuyin.setText(words.get(0).getZhuyin());
+                        pinyin.setText(words.get(0).getPinyin());
+                    }
                 } else {
                     if (this.characters.get(0).matchEnglish(this.answer.getText())) {
                         this.correct++;
                     } else {
                         this.incorrect++;
                     }
-                    this.characters.remove(0);
-                    this.word.setText(characters.get(0).getTraditional() + "\\" + characters.get(0).getSimplified());
+                    studiedCharacters.add(this.characters.remove(0));
+                    if (!characters.isEmpty()) {
+                        this.word.setText(characters.get(0).getTraditional() + "\\" + characters.get(0).getSimplified());
+                        this.zhuyin.setText(characters.get(0).getZhuyin());
+                        this.pinyin.setText(characters.get(0).getPinyin());
+                    }
                 }
 
             }
@@ -243,6 +304,81 @@ public class Study extends JFrame implements ActionListener,KeyListener {
                 this.zhuyin.setText("");
             }
         }
+
+        if (e.getSource() == restartButton) {
+            if (vocabulary) {
+                if (!studiedWords.isEmpty()) {
+                    // Reset the data structures
+                    words.clear();
+                    studiedWords.clear();
+                    getWordData(filename, words);
+                    // Set all text in the GUI appropriately
+                    if (mode) {
+                        word.setText(words.get(0).getEnglishString());
+                        if (showTranscription) {
+                            pinyin.setText(words.get(0).getPinyin());
+                            zhuyin.setText(words.get(0).getZhuyin());
+                        } else {
+                            pinyin.setText("");
+                            zhuyin.setText("");
+                        }
+                    } else {
+                        word.setText(words.get(0).getTraditional() + "\\" + words.get(0).getSimplified());
+                        if (showTranscription) {
+                            pinyin.setText(words.get(0).getPinyin());
+                            zhuyin.setText(words.get(0).getZhuyin());
+                        } else {
+                            pinyin.setText("");
+                            zhuyin.setText("");
+                        }
+                    }
+                }
+            } else {
+                if (!studiedCharacters.isEmpty()) {
+                    // Reset the data structures
+                    characters.clear();
+                    studiedCharacters.clear();
+                    getHanziData(filename, characters);
+                    // Set all the text in the GUI appropriately
+                    if (mode) {
+                        word.setText(characters.get(0).getEnglishString());
+                        if (showTranscription) {
+                            pinyin.setText(characters.get(0).getPinyin());
+                            zhuyin.setText(characters.get(0).getZhuyin());
+                        } else {
+                            pinyin.setText("");
+                            zhuyin.setText("");
+                        }
+                    } else {
+                        word.setText(characters.get(0).getTraditional() + "\\" + characters.get(0).getSimplified());
+                        if (showTranscription) {
+                            pinyin.setText(characters.get(0).getPinyin());
+                            zhuyin.setText(characters.get(0).getZhuyin());
+                        } else {
+                            pinyin.setText("");
+                            zhuyin.setText("");
+                        }
+                    }
+                }
+            }
+            answer.setText("");
+            correct = 0;
+            incorrect = 0;
+            remaining = words.size();
+            correctLabel.setText("Number correct: 0");
+            incorrectLabel.setText("Number incorrect: 0");
+            remainingLabel.setText("Number remaining: " + Integer.toString(remaining));
+        }
+        if (e.getSource() == newSetButton) {
+            FileSelector fs = new FileSelector(vocabulary,false);
+            fs.start();
+            this.dispose();
+        }
+        if (e.getSource() == returnButton) {
+            Selection s = new Selection();
+            s.start();
+            this.dispose();
+        }
     }
     @Override
     public void keyPressed(KeyEvent e) {
@@ -251,9 +387,7 @@ public class Study extends JFrame implements ActionListener,KeyListener {
         }
     }
     @Override
-    public void keyReleased(KeyEvent e) {
-
-    }
+    public void keyReleased(KeyEvent e) {}
     @Override
     public void keyTyped(KeyEvent e) {
         // if they pressed enter, then click the enter button

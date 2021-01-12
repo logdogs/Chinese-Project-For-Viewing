@@ -137,28 +137,34 @@ public class Selection extends JFrame implements ActionListener {
         if (e.getSource() == createVocabSetButton) {
             FileCreator fc = new FileCreator(true);
             fc.start();
+            this.dispose();
         }
         if (e.getSource() == createCharacterSetButton) {
             FileCreator fc = new FileCreator(false);
             fc.start();
+            this.dispose();
         }
         // Modes for adding new "flashcards" to a set that already exists
         if (e.getSource() == addToVocabSetButton) {
             FileSelector fs = new FileSelector(true,true);
             fs.start();
+            this.dispose();
         }
         if (e.getSource() == addToCharacterSetButton) {
             FileSelector fs = new FileSelector(false,true);
             fs.start();
+            this.dispose();
         }
         // Study modes
         if (e.getSource() == studyVocabButton) {
             FileSelector fs = new FileSelector(true,false);
             fs.start();
+            this.dispose();
         }
         if (e.getSource() == studyCharactersButton) {
             FileSelector fs = new FileSelector(false,false);
             fs.start();
+            this.dispose();
         }
     }
 

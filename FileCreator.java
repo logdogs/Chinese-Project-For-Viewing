@@ -18,6 +18,7 @@ public class FileCreator extends JFrame implements ActionListener, KeyListener{
     private JLabel prompt;
     private JTextField text;
     private JButton enterButton;
+    private JButton cancelButton;
 
     public File file;
     private boolean vocabulary;
@@ -33,10 +34,12 @@ public class FileCreator extends JFrame implements ActionListener, KeyListener{
         enterButton = new JButton("Enter");
         this.vocabulary = vocabulary;
         file = null;
+        cancelButton = new JButton("Cancel");
 
         // add listeners
         enterButton.addActionListener(this);
-        this.text.addKeyListener(this);
+        cancelButton.addActionListener(this);
+        text.addKeyListener(this);
 
         // layout stuff
         GroupLayout layout = new GroupLayout(getContentPane());
@@ -44,19 +47,37 @@ public class FileCreator extends JFrame implements ActionListener, KeyListener{
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
 
-        layout.setHorizontalGroup(layout.createSequentialGroup()
-            .addComponent(prompt)
-            .addComponent(text)
-            .addComponent(enterButton)
+        // layout.setHorizontalGroup(layout.createSequentialGroup()
+        //     .addComponent(prompt)
+        //     .addComponent(text)
+        //     .addComponent(enterButton)
+        // );
+        layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(prompt)
+                .addComponent(text)
+                .addComponent(enterButton)
+            )
+            .addComponent(cancelButton)
         );
         layout.linkSize(SwingConstants.HORIZONTAL, prompt, text);
         layout.linkSize(SwingConstants.VERTICAL, prompt, text);
         layout.linkSize(SwingConstants.HORIZONTAL, prompt, enterButton);
         layout.linkSize(SwingConstants.VERTICAL, prompt, enterButton);
-        layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addComponent(prompt)
-            .addComponent(text)
-            .addComponent(enterButton)
+        layout.linkSize(SwingConstants.HORIZONTAL, prompt, cancelButton);
+        layout.linkSize(SwingConstants.VERTICAL, prompt, cancelButton);
+        // layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+        //     .addComponent(prompt)
+        //     .addComponent(text)
+        //     .addComponent(enterButton)
+        // );
+        layout.setVerticalGroup(layout.createSequentialGroup()
+            .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                .addComponent(prompt)
+                .addComponent(text)
+                .addComponent(enterButton)
+            )
+            .addComponent(cancelButton)
         );
 
         start();
@@ -97,6 +118,11 @@ public class FileCreator extends JFrame implements ActionListener, KeyListener{
                 gui.start();
                 this.dispose();
             } catch (IOException ex) { ex.printStackTrace(); }
+        }
+        if (e.getSource() == cancelButton) {
+            Selection s = new Selection();
+            s.start();
+            this.dispose();
         }
     }
 

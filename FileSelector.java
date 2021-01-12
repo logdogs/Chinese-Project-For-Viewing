@@ -16,7 +16,8 @@ public class FileSelector extends JFrame implements ActionListener {
 
     private static final long serialVersionUID = 1L;
 
-    private JButton select;
+    private JButton selectButton;
+    private JButton cancelButton;
     private JLabel prompt;
     private JList<String> files;
     private JScrollPane scroll;
@@ -32,8 +33,10 @@ public class FileSelector extends JFrame implements ActionListener {
         this.add = add;
         this.vocab = vocab;
 
-        this.select = new JButton("Select");
-        this.select.addActionListener(this);
+        this.selectButton = new JButton("Select");
+        this.selectButton.addActionListener(this);
+        this.cancelButton = new JButton("Cancel");
+        this.cancelButton.addActionListener(this);
         this.prompt = new JLabel("Please enter the set you'd like to study");
 
         // Get the list of "sets" (files) to display for the user to choose so we can instantiate the list files
@@ -71,22 +74,22 @@ public class FileSelector extends JFrame implements ActionListener {
         layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(prompt)
-                // .addComponent(text)
-                .addComponent(select)
+                .addComponent(selectButton)
+                .addComponent(cancelButton)
             )
             .addComponent(scroll)
         );
 
-        layout.linkSize(SwingConstants.VERTICAL, select, prompt);
-        layout.linkSize(SwingConstants.HORIZONTAL, select, prompt);
-        // layout.linkSize(SwingConstants.VERTICAL, text, select);
-        // layout.linkSize(SwingConstants.HORIZONTAL, text, select);
+        layout.linkSize(SwingConstants.VERTICAL, selectButton, prompt);
+        layout.linkSize(SwingConstants.HORIZONTAL, selectButton, prompt);
+        // layout.linkSize(SwingConstants.VERTICAL, text, selectButton);
+        // layout.linkSize(SwingConstants.HORIZONTAL, text, selectButton);
         
         layout.setVerticalGroup(layout.createSequentialGroup()
             .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                 .addComponent(prompt)
-                // .addComponent(text)
-                .addComponent(select)
+                .addComponent(selectButton)
+                .addComponent(cancelButton)
             )
             .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                 .addComponent(scroll)
@@ -98,7 +101,7 @@ public class FileSelector extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == select) {
+        if (e.getSource() == selectButton) {
             String setName = files.getSelectedValue();
             // add the fully qualified pathname
             try {
@@ -122,6 +125,11 @@ public class FileSelector extends JFrame implements ActionListener {
                 study.start();
                 this.dispose();
             }
+        }
+        if (e.getSource() == cancelButton) {
+            Selection s = new Selection();
+            s.start();
+            this.dispose();
         }
     }
 

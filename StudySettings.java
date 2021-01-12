@@ -17,6 +17,7 @@ public class StudySettings extends JFrame implements ActionListener {
     private JRadioButton englishToChineseButton;
     private JRadioButton showTranscriptionButton;
     private JButton doneButton;
+    private JButton cancelButton;
 
     // For creating the instance of Study
     private String filename;
@@ -35,10 +36,15 @@ public class StudySettings extends JFrame implements ActionListener {
         englishToChineseLabel = new JLabel("Answer with Chinese: ");
         showTranscriptionLabel = new JLabel("Show the zhuyin and pinyin transcriptions: ");
         chineseToEnglishButton = new JRadioButton();
+        chineseToEnglishButton.addActionListener(this);
         englishToChineseButton = new JRadioButton();
+        englishToChineseButton.addActionListener(this);
         showTranscriptionButton = new JRadioButton();
+        showTranscriptionButton.addActionListener(this);
         doneButton = new JButton("Done");
         doneButton.addActionListener(this);
+        cancelButton = new JButton("Cancel");
+        cancelButton.addActionListener(this);
 
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -58,7 +64,10 @@ public class StudySettings extends JFrame implements ActionListener {
                 .addComponent(showTranscriptionLabel)
                 .addComponent(showTranscriptionButton)
             )
-            .addComponent(doneButton)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(doneButton)
+                .addComponent(cancelButton)
+            )
         );
 
         // Do we need to link sizes here?
@@ -76,7 +85,10 @@ public class StudySettings extends JFrame implements ActionListener {
                 .addComponent(showTranscriptionLabel)
                 .addComponent(showTranscriptionButton)
             )
-            .addComponent(doneButton)
+            .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                .addComponent(doneButton)
+                .addComponent(cancelButton)
+            )
         );
 
         start();
@@ -86,21 +98,25 @@ public class StudySettings extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         // first check for the buttons
         if (e.getSource() == englishToChineseButton) {
-            if (chineseToEnglishButton.isSelected()) {
+            if (chineseToEnglishButton.isContentAreaFilled()) {
                 chineseToEnglishButton.setSelected(false);
             }
         }
         if (e.getSource() == chineseToEnglishButton) {
-            if (englishToChineseButton.isSelected()) {
+            if (englishToChineseButton.isContentAreaFilled()) {
                 englishToChineseButton.setSelected(false);
             }
         }
         if (e.getSource() == doneButton) {
             // first need to make sure we have valid information
-            if (englishToChineseButton.isSelected() || chineseToEnglishButton.isSelected()) {
-                Study study = new Study(filename,vocab,englishToChineseButton.isSelected(),showTranscriptionButton.isSelected());
-                study.start();
-            }
+            Study study = new Study(filename,vocab,englishToChineseButton.isSelected(),showTranscriptionButton.isSelected());
+            study.start();
+            this.dispose();
+        }
+        if (e.getSource() == cancelButton) {
+            Selection s = new Selection();
+            s.start();
+            this.dispose();
         }
     }
 

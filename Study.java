@@ -1,5 +1,6 @@
 import javax.swing.JFrame;
 import java.awt.event.ActionListener;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileInputStream;
@@ -103,22 +104,22 @@ public class Study extends JFrame implements ActionListener,KeyListener {
         returnButton.addActionListener(this);
 
         if (!mode) {
-            this.WORD_LABEL = "Translate: ";
+            this.WORD_LABEL = "";
             if (vocabulary) {
                 if (!words.isEmpty()) {
-                    this.WORD_LABEL += words.get(0).getTraditional() + "\\" + words.get(0).getSimplified();
+                    this.WORD_LABEL += words.get(0).getTraditional() + "   \\   " + words.get(0).getSimplified();
                 } else {
                     this.WORD_LABEL = "Finished!";
                 }
             } else {
                 if (!words.isEmpty()) {
-                    this.WORD_LABEL += characters.get(0).getTraditional() + "\\" + characters.get(0).getSimplified();
+                    this.WORD_LABEL += characters.get(0).getTraditional() + "   \\   " + characters.get(0).getSimplified();
                 } else {
                     this.WORD_LABEL = "Finished!";
                 }
             }
         } else {
-            this.WORD_LABEL = "Translate: ";
+            this.WORD_LABEL = "";
             if (vocabulary) {
                 if (!words.isEmpty()) {
                     this.WORD_LABEL += words.get(0).getEnglishString();
@@ -134,6 +135,7 @@ public class Study extends JFrame implements ActionListener,KeyListener {
             }
         }
         this.word = new JLabel(this.WORD_LABEL);
+        word.setFont(new Font(word.getFont().getName(), word.getFont().getStyle(), word.getFont().getSize() * 2)); // make the characters bigger
         if (!mode) // good
             this.translation = new JLabel("English translation: ");
         else
@@ -184,13 +186,19 @@ public class Study extends JFrame implements ActionListener,KeyListener {
             .addComponent(returnButton)
         );
 
-        layout.linkSize(SwingConstants.VERTICAL, showPinyin, pinyin);
-        layout.linkSize(SwingConstants.HORIZONTAL, showPinyin, pinyin);
+        layout.linkSize(SwingConstants.VERTICAL, showZhuyin, pinyin);
+        layout.linkSize(SwingConstants.HORIZONTAL, showZhuyin, pinyin);
+        layout.linkSize(SwingConstants.VERTICAL, showZhuyin, showPinyin);
+        layout.linkSize(SwingConstants.HORIZONTAL, showZhuyin, showPinyin);
         layout.linkSize(SwingConstants.VERTICAL, showZhuyin, zhuyin);
         layout.linkSize(SwingConstants.HORIZONTAL, showZhuyin, zhuyin);
         layout.linkSize(SwingConstants.VERTICAL, translation, answer);
         layout.linkSize(SwingConstants.VERTICAL, translation, enter);
         layout.linkSize(SwingConstants.HORIZONTAL, translation, enter);
+        layout.linkSize(SwingConstants.VERTICAL, returnButton, restartButton);
+        layout.linkSize(SwingConstants.HORIZONTAL, returnButton, restartButton);
+        layout.linkSize(SwingConstants.VERTICAL, returnButton, newSetButton);
+        layout.linkSize(SwingConstants.HORIZONTAL, returnButton, newSetButton);
 
         layout.setVerticalGroup(layout.createSequentialGroup()
             .addComponent(word)
@@ -261,7 +269,7 @@ public class Study extends JFrame implements ActionListener,KeyListener {
                     }
                     studiedCharacters.add(this.characters.remove(0));
                     if (!characters.isEmpty()) {
-                        this.word.setText(characters.get(0).getTraditional() + "\\" + characters.get(0).getSimplified());
+                        this.word.setText(characters.get(0).getTraditional() + "   \\   " + characters.get(0).getSimplified());
                         this.zhuyin.setText(characters.get(0).getZhuyin());
                         this.pinyin.setText(characters.get(0).getPinyin());
                     }
@@ -275,7 +283,7 @@ public class Study extends JFrame implements ActionListener,KeyListener {
                     }
                     studiedWords.add(this.words.remove(0));
                     if (!words.isEmpty()) {
-                        this.word.setText(words.get(0).getTraditional() + "\\" + words.get(0).getSimplified());
+                        this.word.setText(words.get(0).getTraditional() + "   \\   " + words.get(0).getSimplified());
                         zhuyin.setText(words.get(0).getZhuyin());
                         pinyin.setText(words.get(0).getPinyin());
                     }
@@ -287,7 +295,7 @@ public class Study extends JFrame implements ActionListener,KeyListener {
                     }
                     studiedCharacters.add(this.characters.remove(0));
                     if (!characters.isEmpty()) {
-                        this.word.setText(characters.get(0).getTraditional() + "\\" + characters.get(0).getSimplified());
+                        this.word.setText(characters.get(0).getTraditional() + "   \\   " + characters.get(0).getSimplified());
                         this.zhuyin.setText(characters.get(0).getZhuyin());
                         this.pinyin.setText(characters.get(0).getPinyin());
                     }
@@ -323,7 +331,7 @@ public class Study extends JFrame implements ActionListener,KeyListener {
                             zhuyin.setText("");
                         }
                     } else {
-                        word.setText(words.get(0).getTraditional() + "\\" + words.get(0).getSimplified());
+                        word.setText(words.get(0).getTraditional() + "   \\   " + words.get(0).getSimplified());
                         if (showTranscription) {
                             pinyin.setText(words.get(0).getPinyin());
                             zhuyin.setText(words.get(0).getZhuyin());
@@ -350,7 +358,7 @@ public class Study extends JFrame implements ActionListener,KeyListener {
                             zhuyin.setText("");
                         }
                     } else {
-                        word.setText(characters.get(0).getTraditional() + "\\" + characters.get(0).getSimplified());
+                        word.setText(characters.get(0).getTraditional() + "   \\   " + characters.get(0).getSimplified());
                         if (showTranscription) {
                             pinyin.setText(characters.get(0).getPinyin());
                             zhuyin.setText(characters.get(0).getZhuyin());

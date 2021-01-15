@@ -793,9 +793,10 @@ public class Conversions {
             }
             // ERROR
             else {
-                System.out.printf("Error in convertPinyin() for special case #1, couldn't find an appropriate subcase for %s.\n",pinyin);
-                System.exit(0);
-                return "";
+                // System.out.printf("Error in convertPinyin() for special case #1, couldn't find an appropriate subcase for %s.\n",pinyin);
+                // System.exit(0);
+                // return "";
+                zhuyinFinal = "ㄨ";
             }
             String result = zhuyinInitial.concat(zhuyinFinal);
             return result.concat(toneMark);

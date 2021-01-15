@@ -24,7 +24,7 @@ public class Selection extends JFrame implements ActionListener {
     private JLabel studyCharactersLabel;
 
     public Selection() {
-        this.setSize(600,600);
+        this.setSize(630,350);
         this.setTitle("Menu");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -58,7 +58,7 @@ public class Selection extends JFrame implements ActionListener {
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
 
-        layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+        layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(createVocabSetLabel)
                 .addComponent(createVocabSetButton)
@@ -87,16 +87,28 @@ public class Selection extends JFrame implements ActionListener {
         );
 
         // Change this to link everything to whatever's biggest maybe, idk that seems like it might be slightly more visually appealing
-        layout.linkSize(SwingConstants.VERTICAL,createCharacterSetButton, createCharacterSetLabel);
-        layout.linkSize(SwingConstants.HORIZONTAL,createCharacterSetButton, createCharacterSetLabel);
-        layout.linkSize(SwingConstants.VERTICAL,createVocabSetButton, createVocabSetLabel);
-        layout.linkSize(SwingConstants.HORIZONTAL,createVocabSetButton, createVocabSetLabel);
-        layout.linkSize(SwingConstants.VERTICAL,addToCharacterSetButton, addToCharacterSetLabel);
-        layout.linkSize(SwingConstants.HORIZONTAL,addToCharacterSetButton, addToCharacterSetLabel);
-        layout.linkSize(SwingConstants.VERTICAL,studyCharactersButton, studyCharactersLabel);
-        layout.linkSize(SwingConstants.HORIZONTAL,studyCharactersButton, studyCharactersLabel);
-        layout.linkSize(SwingConstants.VERTICAL,studyVocabButton, studyVocabLabel);
-        layout.linkSize(SwingConstants.HORIZONTAL,studyVocabButton, studyVocabLabel);
+        layout.linkSize(SwingConstants.VERTICAL,createCharacterSetLabel, createCharacterSetLabel);
+        layout.linkSize(SwingConstants.HORIZONTAL,createCharacterSetLabel, createCharacterSetLabel);
+        layout.linkSize(SwingConstants.VERTICAL,createCharacterSetLabel, createVocabSetLabel);
+        layout.linkSize(SwingConstants.HORIZONTAL,createCharacterSetLabel, createVocabSetLabel);
+        layout.linkSize(SwingConstants.VERTICAL,createCharacterSetLabel, addToCharacterSetLabel);
+        layout.linkSize(SwingConstants.HORIZONTAL,createCharacterSetLabel, addToCharacterSetLabel);
+        layout.linkSize(SwingConstants.VERTICAL, createCharacterSetLabel, addToVocabSetLabel);
+        layout.linkSize(SwingConstants.HORIZONTAL, createCharacterSetLabel, addToVocabSetLabel);
+        layout.linkSize(SwingConstants.VERTICAL,createCharacterSetLabel, studyCharactersLabel);
+        layout.linkSize(SwingConstants.HORIZONTAL,createCharacterSetLabel, studyCharactersLabel);
+        layout.linkSize(SwingConstants.VERTICAL,createCharacterSetLabel, studyVocabLabel);
+        layout.linkSize(SwingConstants.HORIZONTAL,createCharacterSetLabel, studyVocabLabel);
+        layout.linkSize(SwingConstants.VERTICAL,createCharacterSetButton,createVocabSetButton);
+        layout.linkSize(SwingConstants.HORIZONTAL,createCharacterSetButton,createVocabSetButton);
+        layout.linkSize(SwingConstants.VERTICAL,createCharacterSetButton,addToVocabSetButton);
+        layout.linkSize(SwingConstants.HORIZONTAL,createCharacterSetButton,addToVocabSetButton);
+        layout.linkSize(SwingConstants.VERTICAL,createCharacterSetButton,addToCharacterSetButton);
+        layout.linkSize(SwingConstants.HORIZONTAL,createCharacterSetButton,addToCharacterSetButton);
+        layout.linkSize(SwingConstants.VERTICAL,createCharacterSetButton,studyCharactersButton);
+        layout.linkSize(SwingConstants.HORIZONTAL,createCharacterSetButton,studyCharactersButton);
+        layout.linkSize(SwingConstants.VERTICAL,createCharacterSetButton,studyVocabButton);
+        layout.linkSize(SwingConstants.HORIZONTAL,createCharacterSetButton,studyVocabButton);
 
         layout.setVerticalGroup(layout.createSequentialGroup()
             .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)

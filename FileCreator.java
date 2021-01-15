@@ -60,17 +60,14 @@ public class FileCreator extends JFrame implements ActionListener, KeyListener{
             )
             .addComponent(cancelButton)
         );
+        
         layout.linkSize(SwingConstants.HORIZONTAL, prompt, text);
         layout.linkSize(SwingConstants.VERTICAL, prompt, text);
         layout.linkSize(SwingConstants.HORIZONTAL, prompt, enterButton);
         layout.linkSize(SwingConstants.VERTICAL, prompt, enterButton);
         layout.linkSize(SwingConstants.HORIZONTAL, prompt, cancelButton);
         layout.linkSize(SwingConstants.VERTICAL, prompt, cancelButton);
-        // layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-        //     .addComponent(prompt)
-        //     .addComponent(text)
-        //     .addComponent(enterButton)
-        // );
+
         layout.setVerticalGroup(layout.createSequentialGroup()
             .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                 .addComponent(prompt)
@@ -114,7 +111,7 @@ public class FileCreator extends JFrame implements ActionListener, KeyListener{
                     } catch (IllegalStateException ex) { ex.printStackTrace(); }
                 }
                 file.createNewFile();
-                GUI gui = new GUI(stringPath);
+                GUI gui = new GUI(stringPath,vocabulary);
                 gui.start();
                 this.dispose();
             } catch (IOException ex) { ex.printStackTrace(); }

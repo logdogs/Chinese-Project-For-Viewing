@@ -10,18 +10,23 @@ import javax.swing.SwingConstants;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionListener;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.StandardOpenOption;
 import javax.swing.JScrollPane;
 import javax.swing.JList;
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+
 import javax.swing.DefaultListModel;
 public class GUI extends JFrame implements KeyListener,MouseListener,ActionListener {
 
@@ -31,14 +36,10 @@ public class GUI extends JFrame implements KeyListener,MouseListener,ActionListe
     private JLabel simpLabel;
     private JLabel tradLabel;
     private JLabel transLabel;
-        private JLabel zhuyinLabel;
-        private JLabel pinyinLabel;
     private JLabel engLabel;
     private final String SIMPLIFIED = "Simplified characters:";
     private final String TRADITIONAL = "Traditional characters:";
     private final String TRANSCRIPTION = "Transcription:";
-    private final String ZHUYIN = "Zhuyin:";
-    private final String PINYIN = "Pinyin:";
     private final String ENGLISH = "English translation:";
     private final String IN_SET = "Already in the set:";
 
@@ -48,6 +49,8 @@ public class GUI extends JFrame implements KeyListener,MouseListener,ActionListe
     private JTextField engText = new JTextField();
     private JButton createButton = new JButton("Create");
     private JButton doneButton = new JButton("Done");
+    private JButton deleteButton = new JButton("Delete");
+    private JButton studyButton = new JButton("Study this set!");
     private JRadioButton zhuyinButton = new JRadioButton("Zhuyin");
     private JRadioButton pinyinButton = new JRadioButton("Pinyin");        
     private JScrollPane alreadyInSet;
@@ -60,16 +63,23 @@ public class GUI extends JFrame implements KeyListener,MouseListener,ActionListe
 
     private DefaultListModel<String> data;
 
-    public GUI(String filename) {
+    public GUI(String filename, boolean vocab) {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(600,600);
         this.setTitle("學習中文！");
-        // this.addKeyListener(this);
 
-        this.zhuyinButton.addActionListener(this);
-        this.pinyinButton.addActionListener(this);
-        this.createButton.addActionListener(this);
-        this.doneButton.addActionListener(e -> {
+        deleteButton.addActionListener(this);
+        studyButton.addActionListener(e ->{
+            StudySettings ss = new StudySettings(filename,vocab);
+            ss.start();
+            this.dispose();
+        });
+        zhuyinButton.addActionListener(this);
+        pinyinButton.addActionListener(this);
+        createButton.addActionListener(this);
+        doneButton.addActionListener(e -> {
+            Selection s = new Selection();
+            s.start();
             this.dispose();
         });
         simpText.addKeyListener(this);
@@ -80,8 +90,6 @@ public class GUI extends JFrame implements KeyListener,MouseListener,ActionListe
         this.simpLabel = new JLabel(SIMPLIFIED);
         this.tradLabel = new JLabel(TRADITIONAL);
         this.transLabel = new JLabel(TRANSCRIPTION);
-        this.zhuyinLabel = new JLabel(ZHUYIN);
-        this.pinyinLabel = new JLabel(PINYIN);
         this.engLabel = new JLabel(ENGLISH);
         this.inSetLabel = new JLabel(IN_SET);
 
@@ -102,9 +110,11 @@ public class GUI extends JFrame implements KeyListener,MouseListener,ActionListe
                     break;
                 }
                 characters = test;
+                String chars[] = characters.split("\\t");
                 transcriptions = scanner.nextLine();
+                String trans[] = transcriptions.split("\\t");
                 english = scanner.nextLine();
-                word = characters + "---" + transcriptions + "---" + english;
+                word = chars[0] + " \\ " + chars[1] + "  ---  " + trans[0] + " \\ " + trans[1] + "  ---  " + english;
                 data.addElement(word);
                 
             }
@@ -112,6 +122,7 @@ public class GUI extends JFrame implements KeyListener,MouseListener,ActionListe
             scanner.close();
         } catch (FileNotFoundException e) { e.printStackTrace(); }
         this.words = new JList<String>(data);
+        words.setFont(new Font(words.getFont().getFontName(), words.getFont().getStyle(), 16));
         this.alreadyInSet = new JScrollPane(this.words);
 
         GroupLayout layout = new GroupLayout(getContentPane());
@@ -143,22 +154,31 @@ public class GUI extends JFrame implements KeyListener,MouseListener,ActionListe
                 .addComponent(engText)
             )
         )
+        .addGroup(layout.createSequentialGroup()
             .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                 .addComponent(createButton)
                 .addComponent(doneButton)
             )
-            
+            .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                .addComponent(deleteButton)
+                .addComponent(studyButton)
+            )
+        )
             .addComponent(alreadyInSet)
         );
 
         layout.linkSize(SwingConstants.VERTICAL, tradLabel, tradText);
         layout.linkSize(SwingConstants.HORIZONTAL, tradLabel, tradText);
-        layout.linkSize(SwingConstants.HORIZONTAL, simpLabel, simpText);
-        layout.linkSize(SwingConstants.VERTICAL, simpLabel, simpText);
-        layout.linkSize(SwingConstants.HORIZONTAL, transLabel, transText);
-        layout.linkSize(SwingConstants.VERTICAL, transLabel, transText);
-        layout.linkSize(SwingConstants.HORIZONTAL, engLabel, engText);
-        layout.linkSize(SwingConstants.VERTICAL, engLabel, engText);
+        layout.linkSize(SwingConstants.HORIZONTAL, tradText, simpText);
+        layout.linkSize(SwingConstants.VERTICAL, tradText, simpText);
+        layout.linkSize(SwingConstants.HORIZONTAL, tradText, transText);
+        layout.linkSize(SwingConstants.VERTICAL, tradText, transText);
+        layout.linkSize(SwingConstants.HORIZONTAL, tradText, engText);
+        layout.linkSize(SwingConstants.VERTICAL, tradText, engText);
+        layout.linkSize(SwingConstants.HORIZONTAL, createButton, doneButton);
+        layout.linkSize(SwingConstants.VERTICAL, createButton, doneButton);
+        layout.linkSize(SwingConstants.HORIZONTAL, studyButton, deleteButton);
+        layout.linkSize(SwingConstants.VERTICAL, studyButton, deleteButton);
  
         layout.setVerticalGroup(layout.createSequentialGroup()
             .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
@@ -188,9 +208,14 @@ public class GUI extends JFrame implements KeyListener,MouseListener,ActionListe
             
             .addComponent(inSetLabel)
             .addComponent(alreadyInSet)
-            
+            .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                 .addComponent(createButton)
+                .addComponent(deleteButton)
+            )
+            .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                 .addComponent(doneButton)
+                .addComponent(studyButton)
+            )
         );
         start();
     }
@@ -233,9 +258,9 @@ public class GUI extends JFrame implements KeyListener,MouseListener,ActionListe
                                     this.engText.getText());
             try {
                 Files.write(Paths.get(setName), (word.toString() + "\n").getBytes(StandardCharsets.UTF_8), StandardOpenOption.APPEND);
-                String addToList = word.getTraditional() + "\\" + word.getSimplified() +
-                                    "---" + word.getZhuyin() + "\\" + word.getPinyin() +
-                                    "---" + word.getEnglishString();
+                String addToList = word.getTraditional() + " \\ " + word.getSimplified() +
+                                    "  ---  " + word.getZhuyin() + " \\ " + word.getPinyin() +
+                                    "  ---  " + word.getEnglishString();
                 data.addElement(addToList);
             } catch (IOException exception) { exception.printStackTrace(); }
 
@@ -245,8 +270,67 @@ public class GUI extends JFrame implements KeyListener,MouseListener,ActionListe
             transText.setText("");
             engText.setText("");
 
-            // rerender the graphics
+            // Reset the cursor to be back on the traditional characters textfield
+            tradText.requestFocus();
         }
+
+        // Delete a selected word/hanzi from the set
+        if (e.getSource() == deleteButton) {
+            if (!words.isSelectionEmpty()) {
+                String form = data.remove(words.getSelectedIndex());
+                // also need to remove it from the file
+                removeWordFromFile(form);
+            }
+        }
+
+        // Study the set we're building
+        if (e.getSource() == studyButton) {
+
+        }
+    }
+
+    // Helper function for removing a vocab word
+    public void removeWordFromFile(String formattedWord) {
+        // Parse the formatedWord for the information necessary to create an equivalent word
+        //  Consists of three components, separated by the pattern "  ---  ":
+        //      1. traditional \ simplified
+        //      2. zhuyin \ pinyin
+        //      3. English
+        // but note that the third component is formatted
+        String components[] = formattedWord.split("  ---  ");
+        String characters[] = components[0].split(" \\\\ ");
+        String transcriptions[] = components[1].split(" \\\\ ");
+        String formattedEnglish[] = components[2].split("\\\\");
+        ArrayList<String> english = new ArrayList<String>(formattedEnglish.length);
+        for (String word : formattedEnglish) {
+            english.add(word);
+        }
+        Word word = new Word(characters[0],characters[1],transcriptions[0],transcriptions[1],english);
+        String toDelete = word.toString();
+        String fileData = "";
+        try {
+            // Also gonna want to wipe the file so writing back to it won't be an issue
+            // Read all of the data from the file
+            Scanner scanner = new Scanner(new FileInputStream(setName), "UTF-8");
+            while (scanner.hasNextLine()) {
+                fileData += scanner.nextLine() + "\n";
+            }
+            scanner.close();
+            fileData = fileData.strip();
+            
+            // "Replace" the data we want to delete
+            if (fileData.contains(toDelete)) {
+                fileData = fileData.replace(toDelete,"");
+            }
+            
+            // Wipe the file
+            FileWriter fw = new FileWriter(setName, Charset.forName("UTF-8"));
+            fw.flush();
+            fw.close();
+
+            // Write the now updated data back to the file
+            Files.write(Paths.get(setName), (fileData ).getBytes(StandardCharsets.UTF_8), StandardOpenOption.WRITE);
+        } catch (IOException ex) { ex.printStackTrace(); }
     }
 
     @Override
@@ -256,44 +340,25 @@ public class GUI extends JFrame implements KeyListener,MouseListener,ActionListe
         }
     }
     @Override
-    public void keyReleased(KeyEvent e) {
-        // System.out.printf("Released %c.\n", e.getKeyChar());
-    }
-    @Override
     public void keyTyped(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ENTER) {
             this.createButton.doClick();
         }
     }
 
+    // Methods we inherit but never need/use
     @Override
-    public void mouseClicked(MouseEvent e) {
-        
-    }
+    public void mouseClicked(MouseEvent e) {}
     @Override
-    public void mousePressed(MouseEvent e) {
-
-    }
+    public void keyReleased(KeyEvent e) {}
     @Override
-    public void mouseReleased(MouseEvent e) {
-
-    }
+    public void mousePressed(MouseEvent e) {}
     @Override
-    public void mouseEntered(MouseEvent e) {
-
-    }
+    public void mouseReleased(MouseEvent e) {}
     @Override
-    public void mouseExited(MouseEvent e) {
-
-    }
-
-    // accessors, no mutators because we don't ever want these to change
-    public JLabel getSimplifiedLabel() {return simpLabel;}
-    public JLabel getTraditionalLabel() {return tradLabel;}
-    public JLabel getTranscriptionLabel() {return transLabel;}
-    public JLabel getZhuyinLabel() {return zhuyinLabel;}
-    public JLabel getPinyinLabel() {return pinyinLabel;}
-    public JLabel getEnglishLabel() {return engLabel;}
+    public void mouseEntered(MouseEvent e) {}
+    @Override
+    public void mouseExited(MouseEvent e) {}
 
     // start method so I can get rid of compiler warnings, idk why they just bother me
     public void start() {

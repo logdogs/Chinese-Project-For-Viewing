@@ -10,3 +10,33 @@ Blue
 綠	绿
 ㄌㄩˋ	lǜ
 Green
+黃	黄
+ㄏㄨㄤˊ	huáng
+Yellow
+金	金
+ㄐㄧㄣˉ	jīn
+Gold
+白	白
+ㄅㄞˊ	bái
+White
+粉紅	粉红
+ㄈㄣˇㄏㄨㄥˊ	fěnhóng
+Pink
+色	色
+ㄙㄜˋ	sè
+Color
+紫	紫
+ㄗˇ	zǐ
+Purple
+灰	灰
+ㄏㄨㄟˉ	huī
+Grey
+銀	银
+ㄧㄣˊ	yín
+Silver
+古銅	古铜
+ㄍㄨˇ ㄊㄨㄥˊ	gǔ tóng
+Bronze
+橙	橙
+ㄔㄥˊ	chéng
+Orange

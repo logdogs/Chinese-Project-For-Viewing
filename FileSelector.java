@@ -41,7 +41,17 @@ public class FileSelector extends JFrame implements ActionListener {
 
         // Get the list of "sets" (files) to display for the user to choose so we can instantiate the list files
         if (vocab) {
-            File directory = new File("C:\\Users\\Evan\\go\\src\\gitGolangProjects\\Chinese-Project\\data\\vocabsets");
+            // Change this so it generalizes to any machine, and to any install location 
+            // File directory = new File("C:\\Users\\Evan\\go\\src\\gitGolangProjects\\Chinese-Project\\data\\vocabsets");
+            File directory = null;
+            try {
+                URL main = FileCreator.class.getResource("FileSelector.class");
+                File path = new File(main.getPath());
+                String stringPath = path.toString();
+                int lastSlash = stringPath.lastIndexOf("\\")+1;
+                stringPath = stringPath.substring(0, lastSlash) + "data\\vocabsets\\";
+                directory = new File(stringPath);
+            } catch (IllegalStateException ex) { ex.printStackTrace(); }
             File vocabFiles[] = directory.listFiles();
             String vocabSets[] = new String[vocabFiles.length];
             for (int i = 0; i < vocabFiles.length; i++) {
@@ -51,7 +61,17 @@ public class FileSelector extends JFrame implements ActionListener {
             files = new JList<String>(vocabSets);
 
         } else {
-            File directory = new File("C:\\Users\\Evan\\go\\src\\gitGolangProjects\\Chinese-Project\\data\\charactersets");
+            // Change this so it generalizes to any machine, and to any install location 
+            // File directory = new File("C:\\Users\\Evan\\go\\src\\gitGolangProjects\\Chinese-Project\\data\\charactersets");
+            File directory = null;
+            try {
+                URL main = FileCreator.class.getResource("FileSelector.class");
+                File path = new File(main.getPath());
+                String stringPath = path.toString();
+                int lastSlash = stringPath.lastIndexOf("\\")+1;
+                stringPath = stringPath.substring(0, lastSlash) + "data\\vocabsets\\";
+                directory = new File(stringPath);
+            } catch (IllegalStateException ex) { ex.printStackTrace(); }
             File characterFiles[] = directory.listFiles();
             String characterSets[] = new String[characterFiles.length];
             files = new JList<String>(characterSets);
@@ -102,6 +122,7 @@ public class FileSelector extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == selectButton) {
+            if (files.getSelectedValue() == null) return;
             String setName = files.getSelectedValue();
             // add the fully qualified pathname
             try {
@@ -117,7 +138,7 @@ public class FileSelector extends JFrame implements ActionListener {
                 setName = stringPath + setName + ".txt";
             } catch (IllegalStateException ex) { ex.printStackTrace(); }
             if (add) {
-                GUI gui = new GUI(setName);
+                GUI gui = new GUI(setName,vocab);
                 gui.start();
                 this.dispose();
             } else {

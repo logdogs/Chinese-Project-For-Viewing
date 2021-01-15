@@ -59,7 +59,7 @@ public class Tests {
 
     // Working
     public void testGUI() {
-        GUI gui = new GUI("OUTPUT.txt");
+        GUI gui = new GUI("OUTPUT.txt",true);
         gui.start();
     }
 

@@ -14,12 +14,16 @@ public class Selection extends JFrame implements ActionListener {
     private JButton createCharacterSetButton;
     private JButton addToVocabSetButton;
     private JButton addToCharacterSetButton;
+    private JButton deleteVocabSetButton;
+    private JButton deleteCharacterSetButton;
     private JButton studyVocabButton;
     private JButton studyCharactersButton;
     private JLabel createVocabSetLabel;
     private JLabel createCharacterSetLabel;
     private JLabel addToVocabSetLabel;
     private JLabel addToCharacterSetLabel;
+    private JLabel deleteVocabSetLabel;
+    private JLabel deleteCharacterSetLabel;
     private JLabel studyVocabLabel;
     private JLabel studyCharactersLabel;
 
@@ -35,6 +39,8 @@ public class Selection extends JFrame implements ActionListener {
         addToCharacterSetButton = new JButton("Add to character set");
         studyVocabButton = new JButton("Study vocab set");
         studyCharactersButton = new JButton("Study character set");
+        deleteVocabSetButton = new JButton("Delete a vocab set");
+        deleteCharacterSetButton = new JButton("Delete a character set");
         
         closeButton.addActionListener(e -> {
             this.dispose();
@@ -43,6 +49,8 @@ public class Selection extends JFrame implements ActionListener {
         createCharacterSetButton.addActionListener(this);
         addToVocabSetButton.addActionListener(this);
         addToCharacterSetButton.addActionListener(this);
+        deleteVocabSetButton.addActionListener(this);
+        deleteCharacterSetButton.addActionListener(this);
         studyVocabButton.addActionListener(this);
         studyCharactersButton.addActionListener(this);
 
@@ -50,6 +58,8 @@ public class Selection extends JFrame implements ActionListener {
         createCharacterSetLabel = new JLabel("Create a new set of individual characters to study:");
         addToVocabSetLabel = new JLabel("Add words to an existing vocab set:");
         addToCharacterSetLabel = new JLabel("Add characters to an existing character set:");
+        deleteVocabSetLabel = new JLabel("Delete a vocabulary set:");
+        deleteCharacterSetLabel = new JLabel("Delete a character set:");
         studyVocabLabel = new JLabel("Study a vocab set:");
         studyCharactersLabel = new JLabel("Study a character set:");
 
@@ -83,6 +93,14 @@ public class Selection extends JFrame implements ActionListener {
                 .addComponent(studyCharactersLabel)
                 .addComponent(studyCharactersButton)
             )
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(deleteVocabSetLabel)
+                .addComponent(deleteVocabSetButton)
+            )
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(deleteCharacterSetLabel)
+                .addComponent(deleteCharacterSetButton)
+            )
             .addComponent(closeButton)
         );
 
@@ -95,6 +113,10 @@ public class Selection extends JFrame implements ActionListener {
         layout.linkSize(SwingConstants.HORIZONTAL,createCharacterSetLabel, addToCharacterSetLabel);
         layout.linkSize(SwingConstants.VERTICAL, createCharacterSetLabel, addToVocabSetLabel);
         layout.linkSize(SwingConstants.HORIZONTAL, createCharacterSetLabel, addToVocabSetLabel);
+        layout.linkSize(SwingConstants.VERTICAL,createCharacterSetLabel,deleteVocabSetLabel);
+        layout.linkSize(SwingConstants.HORIZONTAL,createCharacterSetLabel,deleteVocabSetLabel);
+        layout.linkSize(SwingConstants.VERTICAL,createCharacterSetLabel,deleteCharacterSetLabel);
+        layout.linkSize(SwingConstants.HORIZONTAL,createCharacterSetLabel,deleteCharacterSetLabel);
         layout.linkSize(SwingConstants.VERTICAL,createCharacterSetLabel, studyCharactersLabel);
         layout.linkSize(SwingConstants.HORIZONTAL,createCharacterSetLabel, studyCharactersLabel);
         layout.linkSize(SwingConstants.VERTICAL,createCharacterSetLabel, studyVocabLabel);
@@ -105,6 +127,10 @@ public class Selection extends JFrame implements ActionListener {
         layout.linkSize(SwingConstants.HORIZONTAL,createCharacterSetButton,addToVocabSetButton);
         layout.linkSize(SwingConstants.VERTICAL,createCharacterSetButton,addToCharacterSetButton);
         layout.linkSize(SwingConstants.HORIZONTAL,createCharacterSetButton,addToCharacterSetButton);
+        layout.linkSize(SwingConstants.VERTICAL,createCharacterSetButton,deleteVocabSetButton);
+        layout.linkSize(SwingConstants.HORIZONTAL,createCharacterSetButton,deleteVocabSetButton);
+        layout.linkSize(SwingConstants.VERTICAL,createCharacterSetButton,deleteCharacterSetButton);
+        layout.linkSize(SwingConstants.HORIZONTAL,createCharacterSetButton,deleteCharacterSetButton);
         layout.linkSize(SwingConstants.VERTICAL,createCharacterSetButton,studyCharactersButton);
         layout.linkSize(SwingConstants.HORIZONTAL,createCharacterSetButton,studyCharactersButton);
         layout.linkSize(SwingConstants.VERTICAL,createCharacterSetButton,studyVocabButton);
@@ -134,6 +160,14 @@ public class Selection extends JFrame implements ActionListener {
             .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                 .addComponent(studyCharactersLabel)
                 .addComponent(studyCharactersButton)
+            )
+            .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                .addComponent(deleteVocabSetLabel)
+                .addComponent(deleteVocabSetButton)
+            )
+            .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                .addComponent(deleteCharacterSetLabel)
+                .addComponent(deleteCharacterSetButton)
             )
             .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                 .addComponent(closeButton)
@@ -174,6 +208,16 @@ public class Selection extends JFrame implements ActionListener {
         if (e.getSource() == studyCharactersButton) {
             FileSelector fs = new FileSelector(false,false);
             fs.start();
+            this.dispose();
+        }
+        if (e.getSource() == deleteVocabSetButton) {
+            FileDeletion fd = new FileDeletion(true);
+            fd.start();
+            this.dispose();
+        }
+        if (e.getSource() == deleteCharacterSetButton) {
+            FileDeletion fd = new FileDeletion(false);
+            fd.start();
             this.dispose();
         }
     }

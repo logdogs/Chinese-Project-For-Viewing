@@ -26,8 +26,8 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
-
 import javax.swing.DefaultListModel;
+
 public class GUI extends JFrame implements KeyListener,MouseListener,ActionListener {
 
     private static final long serialVersionUID = 1L;
@@ -43,16 +43,16 @@ public class GUI extends JFrame implements KeyListener,MouseListener,ActionListe
     private final String ENGLISH = "English translation:";
     private final String IN_SET = "Already in the set:";
 
-    private JTextField simpText = new JTextField();
-    private JTextField tradText = new JTextField();
-    private JTextField transText = new JTextField();
-    private JTextField engText = new JTextField();
-    private JButton createButton = new JButton("Create");
-    private JButton doneButton = new JButton("Done");
-    private JButton deleteButton = new JButton("Delete");
-    private JButton studyButton = new JButton("Study this set!");
-    private JRadioButton zhuyinButton = new JRadioButton("Zhuyin");
-    private JRadioButton pinyinButton = new JRadioButton("Pinyin");        
+    private JTextField simpText;
+    private JTextField tradText;
+    private JTextField transText;
+    private JTextField engText;
+    private JButton createButton;
+    private JButton doneButton;
+    private JButton deleteButton;
+    private JButton studyButton;
+    private JRadioButton zhuyinButton;
+    private JRadioButton pinyinButton;     
     private JScrollPane alreadyInSet;
     private JLabel inSetLabel;
     private JList<String> words;
@@ -67,6 +67,17 @@ public class GUI extends JFrame implements KeyListener,MouseListener,ActionListe
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(600,600);
         this.setTitle("學習中文！");
+
+        simpText = new JTextField();
+        tradText = new JTextField();
+        transText = new JTextField();
+        engText = new JTextField();
+        createButton = new JButton("Create");
+        doneButton = new JButton("Done");
+        deleteButton = new JButton("Delete");
+        studyButton = new JButton("Study this set!");
+        zhuyinButton = new JRadioButton("Zhuyin");
+        pinyinButton = new JRadioButton("Pinyin");  
 
         deleteButton.addActionListener(this);
         studyButton.addActionListener(e ->{
@@ -87,15 +98,15 @@ public class GUI extends JFrame implements KeyListener,MouseListener,ActionListe
         transText.addKeyListener(this);
         engText.addKeyListener(this);
 
-        this.simpLabel = new JLabel(SIMPLIFIED);
-        this.tradLabel = new JLabel(TRADITIONAL);
-        this.transLabel = new JLabel(TRANSCRIPTION);
-        this.engLabel = new JLabel(ENGLISH);
-        this.inSetLabel = new JLabel(IN_SET);
+        simpLabel = new JLabel(SIMPLIFIED);
+        tradLabel = new JLabel(TRADITIONAL);
+        transLabel = new JLabel(TRANSCRIPTION);
+        engLabel = new JLabel(ENGLISH);
+        inSetLabel = new JLabel(IN_SET);
 
-        this.converter = new Conversions();
+        converter = new Conversions();
 
-        this.setName = filename;
+        setName = filename;
 
         data = new DefaultListModel<String>();
         try {
@@ -121,9 +132,9 @@ public class GUI extends JFrame implements KeyListener,MouseListener,ActionListe
 
             scanner.close();
         } catch (FileNotFoundException e) { e.printStackTrace(); }
-        this.words = new JList<String>(data);
+        words = new JList<String>(data);
         words.setFont(new Font(words.getFont().getFontName(), words.getFont().getStyle(), 16));
-        this.alreadyInSet = new JScrollPane(this.words);
+        alreadyInSet = new JScrollPane(this.words);
 
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -217,7 +228,6 @@ public class GUI extends JFrame implements KeyListener,MouseListener,ActionListe
                 .addComponent(studyButton)
             )
         );
-        start();
     }
 
     @Override
@@ -252,10 +262,10 @@ public class GUI extends JFrame implements KeyListener,MouseListener,ActionListe
 
             // Print the word to a file, formatted by the toString method for Word (thus, Words are delimited in the set file by "\n")
             Word word = new Word(transcription, 
-                                    this.simpText.getText(),
-                                    this.tradText.getText(),
-                                    this.zhuyinButton.isSelected(),
-                                    this.engText.getText());
+                                    simpText.getText(),
+                                    tradText.getText(),
+                                    zhuyinButton.isSelected(),
+                                    engText.getText());
             try {
                 Files.write(Paths.get(setName), (word.toString() + "\n").getBytes(StandardCharsets.UTF_8), StandardOpenOption.APPEND);
                 String addToList = word.getTraditional() + " \\ " + word.getSimplified() +
@@ -284,9 +294,9 @@ public class GUI extends JFrame implements KeyListener,MouseListener,ActionListe
         }
 
         // Study the set we're building
-        if (e.getSource() == studyButton) {
+        // if (e.getSource() == studyButton) {
 
-        }
+        // }
     }
 
     // Helper function for removing a vocab word
@@ -336,13 +346,13 @@ public class GUI extends JFrame implements KeyListener,MouseListener,ActionListe
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-            this.createButton.doClick();
+            createButton.doClick();
         }
     }
     @Override
     public void keyTyped(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-            this.createButton.doClick();
+            createButton.doClick();
         }
     }
 

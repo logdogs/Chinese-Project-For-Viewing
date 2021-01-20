@@ -25,7 +25,7 @@ public class Selection extends JFrame implements ActionListener {
 
     public Selection() {
         this.setSize(630,350);
-        this.setTitle("Menu");
+        this.setTitle("Main Menu");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         closeButton = new JButton("Exit");
@@ -139,8 +139,6 @@ public class Selection extends JFrame implements ActionListener {
                 .addComponent(closeButton)
             )
         );
-
-        start();
     }
 
     @Override

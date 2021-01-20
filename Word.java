@@ -20,7 +20,7 @@ public class Word {
     // converting pinyin --> zhuyin or zhuyin --> pinyin is simple, converting the character tricky
     public Word(String transcription, String simplified, String traditional, boolean zhuyin, String english) {
         this.english = new ArrayList<String>();
-        this.converter = new Conversions();
+        converter = new Conversions();
 
         // Need to parse the English
         String words[] = english.split("\\|/");
@@ -51,11 +51,11 @@ public class Word {
     }
     
     // Accessors and mutators for the different fields
-    public ArrayList<String> getEnglish() { return this.english; }
-    public String getPinyin() { return this.pinyin; }
-    public String getZhuyin() { return this.zhuyin; }
-    public String getSimplified() { return this.simplified; }
-    public String getTraditional() { return this.traditional; }
+    public ArrayList<String> getEnglish() { return english; }
+    public String getPinyin() { return pinyin; }
+    public String getZhuyin() { return zhuyin; }
+    public String getSimplified() { return simplified; }
+    public String getTraditional() { return traditional; }
     public void setEnglish(ArrayList<String> english) { this.english = english; }
     public void addEnglish(String word) { this.english.add(word); }
     public void setPinyin(String pinyin) { this.pinyin = pinyin; }
@@ -65,21 +65,21 @@ public class Word {
 
     // toString method, mainly for debugging
     public String toString() {
-        String retval = this.traditional + "\t" + this.simplified + "\n" + this.zhuyin + "\t" + this.pinyin + "\n";
-        for (int i = 0; i < this.english.size(); i++) {
-            if (i < this.english.size()-1) {
+        String retval = traditional + "\t" + simplified + "\n" + zhuyin + "\t" + pinyin + "\n";
+        for (int i = 0; i < english.size(); i++) {
+            if (i < english.size()-1) {
                 retval += "\\";
             }
-            retval += this.english.get(i);
+            retval += english.get(i);
         }
         return retval;
     }
     // toString method for the English meanings, only for use in GUIs
     public String getEnglishString() {
         String retval = "";
-        for (int i = 0; i < this.english.size(); i++) {
-            retval += this.english.get(i);
-            if (i < this.english.size()-1) {
+        for (int i = 0; i < english.size(); i++) {
+            retval += english.get(i);
+            if (i < english.size()-1) {
                 retval += "\\";
             }
         }
@@ -88,7 +88,7 @@ public class Word {
     
     // Methods for studying that test whether input given was acceptable
     public boolean matchEnglish(String answer) {
-        for (String word : this.english) {
+        for (String word : english) {
             if (word.equalsIgnoreCase(answer)) {
                 return true;
             }
@@ -96,6 +96,6 @@ public class Word {
         return false;
     }
     public boolean matchChinese(String answer) {
-        return this.traditional.equalsIgnoreCase(answer) || this.simplified.equalsIgnoreCase(answer);
+        return traditional.equalsIgnoreCase(answer) || simplified.equalsIgnoreCase(answer);
     }
 }

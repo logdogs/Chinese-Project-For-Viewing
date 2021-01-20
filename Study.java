@@ -112,7 +112,7 @@ public class Study extends JFrame implements ActionListener,KeyListener {
                     this.WORD_LABEL = "Finished!";
                 }
             } else {
-                if (!words.isEmpty()) {
+                if (!characters.isEmpty()) {
                     this.WORD_LABEL += characters.get(0).getTraditional() + "   \\   " + characters.get(0).getSimplified();
                 } else {
                     this.WORD_LABEL = "Finished!";
@@ -127,7 +127,7 @@ public class Study extends JFrame implements ActionListener,KeyListener {
                     this.WORD_LABEL = "Finished";
                 }
             } else {
-                if (!words.isEmpty()) {
+                if (!characters.isEmpty()) {
                     this.WORD_LABEL += characters.get(0).getEnglishString();
                 } else {
                     this.WORD_LABEL = "Finished";
@@ -153,9 +153,16 @@ public class Study extends JFrame implements ActionListener,KeyListener {
 
 
         if (showTranscription) {
-            if (!words.isEmpty()) {
-                this.pinyin.setText(words.get(0).getPinyin());
-                this.zhuyin.setText(words.get(0).getZhuyin());
+            if (vocabulary) {
+                if (!words.isEmpty()) {
+                    this.pinyin.setText(words.get(0).getPinyin());
+                    this.zhuyin.setText(words.get(0).getZhuyin());
+                }
+            } else {
+                if (!characters.isEmpty()) {
+                    pinyin.setText(characters.get(0).getPinyin());
+                    zhuyin.setText(characters.get(0).getZhuyin());
+                }
             }
         }
         GroupLayout layout = new GroupLayout(getContentPane());
@@ -230,24 +237,43 @@ public class Study extends JFrame implements ActionListener,KeyListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == showPinyin) {
             if (!this.showTranscription) {
-                if (!words.isEmpty()) {
-                    this.pinyin.setText(this.words.get(0).getPinyin());
+                if (vocabulary) {
+                    if (!words.isEmpty()) {
+                        this.pinyin.setText(this.words.get(0).getPinyin());
+                    }
+                } else {
+                    if (!characters.isEmpty()) {
+                        this.pinyin.setText(this.characters.get(0).getPinyin());
+                    }
                 }
             }
         }
         if (e.getSource() == showZhuyin) {
             if (!this.showTranscription) {
-                if (!words.isEmpty()) {
-                    this.zhuyin.setText(this.words.get(0).getZhuyin());
+                if (vocabulary) {
+                    if (!words.isEmpty()) {
+                        this.zhuyin.setText(this.words.get(0).getZhuyin());
+                    }
+                } else {
+                    if (!characters.isEmpty()) {
+                        this.zhuyin.setText(this.characters.get(0).getZhuyin());
+                    }
                 }
             }
         }
         if (e.getSource() == enter) {
             // check the mode (recall, true == Chinese->English, false == English->Chinese)
             //  then check to see whether we're working with Hanzi or Words
-            if (words.isEmpty()) {
-                return;
+            if (vocabulary) {
+                if (words.isEmpty()) {
+                    return;
+                }
+            } else {
+                if (characters.isEmpty()) {
+                    return;
+                }
             }
+            
             if (mode) {
                 if (this.vocabulary) {
                     if (this.words.get(0).matchChinese(this.answer.getText())) {

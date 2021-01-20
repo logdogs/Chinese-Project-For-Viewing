@@ -69,7 +69,7 @@ public class FileSelector extends JFrame implements ActionListener {
                 File path = new File(main.getPath());
                 String stringPath = path.toString();
                 int lastSlash = stringPath.lastIndexOf("\\")+1;
-                stringPath = stringPath.substring(0, lastSlash) + "data\\vocabsets\\";
+                stringPath = stringPath.substring(0, lastSlash) + "data\\charactersets\\";
                 directory = new File(stringPath);
             } catch (IllegalStateException ex) { ex.printStackTrace(); }
             File characterFiles[] = directory.listFiles();
@@ -115,8 +115,6 @@ public class FileSelector extends JFrame implements ActionListener {
                 .addComponent(scroll)
             )
         );
-
-        start();
     }
 
     @Override
